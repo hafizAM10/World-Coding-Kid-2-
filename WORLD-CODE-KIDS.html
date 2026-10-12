@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>World Code Kids - Petualangan Koding Codi</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@500;600;700;800;900&amp;family=Outfit:wght@700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .tactile-btn { transition: all 0.12s ease-in-out; }
+    .tactile-btn:active { transform: translateY(2px); }
+    @keyframes gentle-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-float { animation: gentle-float 2.5s ease-in-out infinite; }
+    @keyframes pop-spark {
+      0% { transform: scale(0.85); opacity: 0; }
+      50% { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop { animation: pop-spark 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes pulse-wire {
+      0%, 100% { filter: drop-shadow(0 0 3px #38b000); }
+      50% { filter: drop-shadow(0 0 10px #84fe58); }
+    }
+    .active-circuit-pulse { animation: pulse-wire 2s ease-in-out infinite; }
+    @keyframes radar-sweep {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      50% { transform: scale(1.35); opacity: 0.4; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    .radar-pulse { animation: radar-sweep 1.6s ease-out infinite; }
+    @keyframes toast-in {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .toast-animate { animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
+</head>
+<body class="bg-[#f9f9ff] font-['Nunito_Sans'] text-[#111c2d] antialiased select-none">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 right-0 z-40 h-16 bg-white border-b border-slate-200 shadow-xs">
+<div class="w-full h-16 px-4 md:px-6 flex items-center justify-between gap-3">
+<!-- Brand -->
+<div class="flex items-center gap-2 shrink-0">
+<div class="flex items-center gap-1.5 bg-[#f0f3ff] px-3 py-1.5 rounded-full border border-emerald-100">
+<span class="material-symbols-outlined text-[#206d00] text-[22px]">bolt</span>
+<span class="font-['Outfit'] font-black text-[#206d00] text-lg tracking-tight">World Code Kids</span>
+</div>
+</div>
+<!-- Center Tabs -->
+<nav class="hidden md:flex items-center gap-2">
+<a aria-current="page" class="px-4 py-1.5 rounded-full bg-[#38b000] text-white font-['Outfit'] font-black text-sm shadow-[0_3px_0_0_#206d00]" href="#">Peta Pulau</a>
+<button class="px-4 py-1.5 rounded-full font-['Outfit'] font-bold text-sm text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" id="nav-arena-btn" type="button">Arena Koding</button>
+<button class="px-4 py-1.5 rounded-full font-['Outfit'] font-bold text-sm text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" id="nav-lemari-btn" type="button">Lemari Robot</button>
+</nav>
+<!-- Right HUD: Coins, Audio, Toko, & Profile / Sign In -->
+<div class="flex items-center gap-2.5 shrink-0">
+<!-- Coins -->
+<div class="flex items-center gap-1.5 bg-[#ffdea9] px-3 py-1.5 rounded-full shadow-[0_2px_0_0_#c88f00]">
+<span class="font-['Outfit'] font-black text-base text-[#271900]" id="global-coin-count">0</span>
+<span class="text-sm">🟡</span>
+</div>
+<!-- Audio Read -->
+<button aria-label="Suara Narator" class="w-9 h-9 flex items-center justify-center bg-slate-100 hover:bg-slate-200 rounded-full cursor-pointer transition-colors relative border border-slate-200 shadow-xs" id="global-audio-btn" onclick="window.toggleNarratorAudio()" type="button">
+<span class="material-symbols-outlined text-slate-700 text-[18px]">volume_up</span>
+</button>
+<!-- Toko Codi -->
+<button class="tactile-btn flex items-center gap-1.5 bg-[#006399] px-3.5 py-1.5 rounded-full font-['Outfit'] font-extrabold text-xs text-white shadow-[0_3px_0_0_#004972] cursor-pointer" id="header-toko-btn" type="button">
+<span class="material-symbols-outlined text-[16px]">checkroom</span>
+<span class="hidden sm:inline">Toko Codi</span>
+</button>
+<!-- Child-Friendly User Profile HUD -->
+<div class="flex items-center" id="hud-profile-container"></div>
+</div>
+</div>
+</header>
+<main class="w-full pt-16 bg-[#f9f9ff] min-h-[calc(100vh-64px)] pb-12">
+<!-- Sector Header Card -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
+<div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center shrink-0 shadow-xs text-[#206d00]">
+<span class="material-symbols-outlined text-[32px]">landscape</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="bg-[#cde5ff] text-[#001d32] font-['Outfit'] text-xs px-2.5 py-0.5 rounded-full font-bold" id="island-zone-badge">Zona 1: Pantai Sirkuit &amp; Puncak Batu</span>
+<span class="text-slate-400">•</span>
+<span class="text-xs font-bold text-slate-600 font-['Outfit']" id="progress-text">0 / 15 Selesai</span>
+</div>
+<h1 class="font-['Outfit'] text-2xl sm:text-3xl font-black text-[#111c2d] truncate tracking-tight mt-0.5">Pulau Sirkuit Ajaib</h1>
+</div>
+</div>
+<!-- Battery Energy Bar -->
+<div class="flex items-center gap-3 w-full md:w-80 shrink-0 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+<div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#206d00] shadow-xs" id="battery-icon-container">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-['Outfit'] text-xs text-slate-600 font-bold">Baterai Inti Pulau</span>
+<span class="font-['Outfit'] text-sm font-black text-[#206d00]" id="island-battery-pct">0%</span>
+</div>
+<div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+<div class="h-full bg-[#38b000] rounded-full transition-all duration-700" id="island-battery-bar" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Island World Map Stage (Clean Continuous 15-Level Serpentine Path) -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6 mt-5">
+<div class="relative w-full rounded-3xl bg-white shadow-xl overflow-hidden min-h-[960px] flex flex-col justify-between border-2 border-emerald-200">
+<!-- Distant Horizon: Kota Masa Depan (Locked Realm preview) -->
+<div class="relative w-full h-36 bg-gradient-to-b from-sky-200/90 to-white px-6 py-4 flex items-center justify-between overflow-hidden border-b border-sky-100">
+<div class="relative z-10 flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white shadow-xs">
+<div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center" id="city-lock-badge">
+<span class="material-symbols-outlined text-[22px]">lock</span>
+</div>
+<div>
+<span class="font-['Outfit'] text-[11px] font-black text-slate-500 uppercase tracking-wider block" id="city-lock-subtext">Terkunci sampai Level 15</span>
+<p class="font-['Outfit'] text-base font-black text-[#111c2d]">Kota Masa Depan (Jalur Langit Neon)</p>
+</div>
+</div>
+<div class="relative z-10 hidden sm:flex items-center gap-2 bg-white/80 px-3.5 py-1.5 rounded-full shadow-xs text-xs font-bold text-slate-600">
+<span class="material-symbols-outlined text-[#006399] text-[18px]">cloud</span>
+<span class="">Tertutup kabut awan halus...</span>
+</div>
+</div>
+<!-- Interactive Map SVG Pathways + 15 Sequential Nodes -->
+<div class="relative flex-1 w-full min-h-[760px] p-4 flex flex-col justify-between" id="island-stage-viewport">
+<svg class="absolute inset-0 w-full h-full pointer-events-none" id="map-svg-canvas" preserveAspectRatio="none" viewBox="0 0 1000 760" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter height="150%" id="wire-neon-glow" width="150%" x="-25%" y="-25%"><feGaussianBlur result="coloredBlur" stdDeviation="5"></feGaussianBlur><feMerge><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="coloredBlur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs>
+  <path class="text-sky-50" d="M-50,220 Q200,90 480,180 T1050,110 L1050,760 L-50,760 Z" fill="currentColor"></path>
+  <path class="text-emerald-50/70" d="M-30,380 Q320,240 650,330 T1050,280 L1050,760 L-30,760 Z" fill="currentColor"></path>
+  <path class="text-amber-50/80" d="M-20,580 Q250,520 600,560 T1020,530 L1020,760 L-20,760 Z" fill="currentColor"></path>
+  <path d="M 320,668.8 C 424,668.8 476,668.8 580,668.8 C 684,667.2 736,665.6 840,653.6 C 816,592.8 804,562.4 780,532 C 668,532 612,532 500,532 C 380,532 320,532 200,532 C 216,463.6 224,429.4 240,395.2 C 344,395.2 396,395.2 500,395.2 C 612,395.2 668,395.2 780,395.2 C 788,326.8 792,292.6 800,258.4 C 680,258.4 620,258.4 500,258.4 C 380,258.4 320,258.4 200,258.4 C 232,189.6 248,155.2 280,121.6 C 368,121.6 412,121.6 500,121.6 C 500,76 500,52 500,30.4" fill="none" id="static-fallback-path" stroke="#94a3b8" stroke-dasharray="10 10" stroke-linecap="round" stroke-width="8"></path>
+  <g id="svg-paths-container"></g>
+</svg>
+<!-- 15 Interactive Map Nodes Container -->
+<div class="relative z-10 w-full h-full min-h-[700px] pointer-events-auto" id="island-map-nodes-container"></div>
+<!-- Big Tactile Play Button -->
+<div class="mt-2 mb-3 flex justify-center z-10">
+<button class="tactile-btn flex items-center gap-2 bg-[#38b000] hover:bg-[#2f9600] px-8 py-3 rounded-full font-['Outfit'] font-black text-lg text-white shadow-[0_5px_0_0_#206d00] cursor-pointer border-2 border-emerald-200" id="play-level-btn" type="button">
+<span class="tracking-wide" id="hero-play-label">MAIN LEVEL 1 ▷</span>
+<span class="material-symbols-outlined text-[24px]">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Sunny Shore Bottom Banner & Concept Focus -->
+<div class="relative z-10 w-full bg-slate-50 px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-[#206d00] animate-ping"></span>
+<div class="flex items-center gap-2">
+<span class="font-['Outfit'] text-xs font-black text-slate-800">Fokus Misi:</span>
+<span class="bg-white px-3 py-1 rounded-full font-['Outfit'] text-xs font-bold text-[#206d00] shadow-xs border border-emerald-200" id="map-concept-badge">
+                Konsep 1: Algoritma (Langkah Runtut)
+              </span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-xs font-bold text-slate-600">
+<span class="material-symbols-outlined text-[18px] text-amber-500">lightbulb</span>
+<span class="" id="map-hint-text">Langkah: Maju ➔ Maju ➔ Maju (Tujuan: D1)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3 Core Learning Objective Feature Badges -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6 mt-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-white p-4 rounded-2xl shadow-xs flex items-start gap-3 border border-emerald-100">
+<div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 text-[#206d00]">
+<span class="material-symbols-outlined text-[22px]">route</span>
+</div>
+<div>
+<h3 class="font-['Outfit'] text-sm font-bold text-[#111c2d]">15 Level Bertingkat</h3>
+<p class="text-xs text-slate-500 font-medium mt-0.5">Kombinasi Algoritma, Sequence, IF/ELSE, Loop, hingga Debugging terintegrasi penuh!</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-2xl shadow-xs flex items-start gap-3 border border-sky-100">
+<div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center shrink-0 text-[#006399]">
+<span class="material-symbols-outlined text-[22px]">view_timeline</span>
+</div>
+<div>
+<h3 class="font-['Outfit'] text-sm font-bold text-[#111c2d]">Pita Aksi 20 Slot</h3>
+<p class="text-xs text-slate-500 font-medium mt-0.5">Susun perintah balok lebih leluasa dan terstruktur dalam pita 20 slot yang ringkas &amp; presisi.</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-2xl shadow-xs flex items-start gap-3 border border-amber-100">
+<div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0 text-amber-700">
+<span class="material-symbols-outlined text-[22px]">power</span>
+</div>
+<div>
+<h3 class="font-['Outfit'] text-sm font-bold text-[#111c2d]">Nyalakan Pulau Ajaib</h3>
+<p class="text-xs text-slate-500 font-medium mt-0.5">Selesaikan setiap level untuk menyalakan aliran kabel energi hingga ke puncak level 15.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- DEDICATED FULLSCREEN APP OVERLAY STAGE (INTERACTIVE GAMEPLAY ARENA) -->
+<div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md hidden flex-col transition-all duration-300" id="game-overlay">
+<div class="w-full h-full max-w-6xl mx-auto flex flex-col bg-white shadow-2xl md:my-auto md:h-[96vh] md:rounded-3xl overflow-hidden border-2 border-emerald-300">
+<!-- Top Bar inside Overlay -->
+<div class="h-16 px-4 md:px-6 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 shadow-xs">
+<button class="tactile-btn flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-['Outfit'] font-bold text-xs shadow-[0_2px_0_0_#94a3b8] cursor-pointer" id="close-overlay-btn" type="button">
+<span class="text-sm font-black">✕</span>
+<span class="">Kembali ke Peta</span>
+</button>
+<div class="flex items-center gap-2">
+<span class="bg-[#cde5ff] text-[#001d32] text-xs font-['Outfit'] font-black px-3 py-1 rounded-full uppercase tracking-wider" id="overlay-level-badge">Level 1: ALGORITMA</span>
+<span class="font-['Outfit'] text-sm font-extrabold text-[#111c2d] hidden sm:inline" id="overlay-level-title">Misi: Mengambil Baterai Daya</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="tactile-btn flex items-center gap-1 bg-[#006399] px-3 py-1.5 rounded-full font-['Outfit'] text-xs font-bold text-white shadow-[0_2px_0_0_#004972] cursor-pointer" id="overlay-toko-btn" type="button">
+<span class="">🛍️</span>
+<span class="hidden sm:inline">Lemari</span>
+</button>
+<div class="flex items-center gap-1 bg-[#ffdea9] px-2.5 py-1 rounded-full shadow-[0_2px_0_0_#c88f00]">
+<span class="font-['Outfit'] text-xs font-black text-[#271900]" id="overlay-coin-count">0</span>
+<span class="text-xs">🟡</span>
+</div>
+</div>
+</div>
+<!-- Pedagogical Mission Banner -->
+<div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-sky-50 px-4 md:px-6 py-2.5 border-b border-emerald-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-2.5 shrink-0">
+<div class="flex items-start sm:items-center gap-3 w-full md:w-auto flex-1 min-w-0">
+<div class="w-12 h-12 rounded-2xl bg-cyan-100 border border-cyan-300 flex items-center justify-center shrink-0 shadow-xs relative overflow-visible" id="game-banner-codi-avatar"></div>
+<div class="bg-white px-3.5 py-2 rounded-2xl border-2 border-emerald-200 shadow-xs flex-1 min-w-0 flex flex-col gap-0.5" id="codi-dialog-box">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-[#206d00] uppercase tracking-wide" id="codi-concept-badge">🎓 Materi: ALGORITMA</span>
+<span class="text-[11px] font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full" id="codi-concept-summary">💡 Algoritma = Resep langkah demi langkah</span>
+</div>
+<p class="text-xs font-bold text-[#111c2d] leading-snug" id="overlay-dialog-text">
+                Halo teman! Di Level 1 kita belajar ALGORITMA: urutan langkah teratur dan logis dari awal sampai akhir. Baterai daya ada di kotak D1 berjarak 3 langkah. Tugasmu: Pasang 3 balok 'Maju 1 Langkah'!
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0 self-end md:self-center">
+<button class="tactile-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#84fe58] text-[#052100] hover:bg-[#38b000] hover:text-white font-['Outfit'] font-bold text-xs shadow-[0_2px_0_0_#206d00] cursor-pointer" id="game-audio-read-btn" onclick="window.toggleNarratorAudio()" type="button">
+<span class="material-symbols-outlined text-[16px]">volume_up</span>
+<span class="">Dengarkan 🔊</span>
+</button>
+</div>
+</div>
+<!-- Main Game Workspace: Grid + Command Center -->
+<div class="flex-1 p-4 grid grid-cols-1 lg:grid-cols-12 gap-3.5 overflow-y-auto bg-[#f9f9ff]">
+<div class="lg:col-span-6 flex flex-col items-center justify-center bg-white rounded-2xl p-3.5 shadow-xs border border-emerald-100">
+<div class="w-full flex justify-between items-center mb-1.5 px-2 text-xs font-bold text-slate-600">
+<span class="font-['Outfit']" id="grid-subheading">Panggung Grid 6x6 Petualangan Codi</span>
+<span class="bg-slate-100 px-2.5 py-0.5 rounded-full text-[#006399] font-['Outfit'] font-black" id="grid-goal-label">Tujuan: Kotak D1 ⚡</span>
+</div>
+<div class="w-full max-w-[390px] aspect-square bg-sky-50/60 p-1.5 rounded-2xl border-2 border-sky-200 shadow-inner flex flex-col">
+<div class="grid grid-cols-6 text-center text-xs font-black text-[#006399] py-0.5 font-['Outfit']">
+<div class="">A</div><div class="">B</div><div class="">C</div><div class="">D</div><div class="">E</div><div class="">F</div>
+</div>
+<div class="flex-1 grid grid-rows-6 gap-1" id="interactive-grid-board"></div>
+</div>
+<div class="w-full flex items-center justify-around mt-2 text-xs font-bold text-slate-500 px-1">
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Codi</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span> Baterai</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> Halangan</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-400 inline-block"></span> Sensor</span>
+</div>
+<div class="w-full mt-2.5 bg-amber-50/90 border-2 border-amber-200 rounded-xl p-2.5 flex flex-col gap-1.5 shadow-xs text-left" id="strategy-guide-card">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">💡</span>
+<h4 class="font-['Outfit'] text-xs font-black text-amber-950 uppercase tracking-wide">Trik Petualangan Codi</h4>
+</div>
+<span class="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full font-['Outfit']">Tips Cepat ⭐</span>
+</div>
+<p class="text-xs font-extrabold text-amber-900 leading-snug" id="strategy-analogy-text">
+                ⭐ Trik Bintang: Cukup gunakan tepat 3 balok Maju untuk mendapat 3 Bintang penuh!
+              </p>
+<div class="bg-white px-2.5 py-1 rounded-lg border border-amber-200 flex items-center justify-between shadow-inner" id="strategy-guide-steps">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="text-xs">🎯</span>
+<span class="text-[11px] font-black text-slate-800 truncate" id="strategy-steps-text">Langkah: Maju ➔ Maju ➔ Maju (Tujuan: D1)</span>
+</div>
+<span class="text-[9px] bg-emerald-100 text-[#206d00] font-black px-1.5 py-0.5 rounded shrink-0">Pasti Berhasil</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-6 flex flex-col justify-start space-y-2.5">
+<div class="bg-white rounded-2xl p-2.5 shadow-xs border border-emerald-100">
+<div class="flex items-center justify-between mb-1.5">
+<h3 class="font-['Outfit'] text-xs sm:text-sm font-extrabold text-[#111c2d] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#206d00] text-[18px]">category</span>
+<span class="">Pilihan Balok Perintah</span>
+</h3>
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-['Outfit']">Ketuk untuk pasang</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="block-palette-container"></div>
+</div>
+<div class="bg-white rounded-2xl p-2.5 shadow-xs border border-emerald-100 flex flex-col justify-between gap-1.5">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#206d00] text-[18px]">view_timeline</span>
+<h3 class="font-['Outfit'] text-xs sm:text-sm font-extrabold text-[#111c2d]">Pita Aksi (20 Slot Urutan)</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] font-black text-[#006399] bg-sky-100 px-2 py-0.5 rounded-full font-['Outfit']" id="slot-counter">0 / 20 Terisi</span>
+<button class="text-xs text-rose-500 hover:text-rose-700 font-bold hover:underline cursor-pointer flex items-center gap-0.5 font-['Outfit']" id="clear-all-slots-btn" type="button">
+<span class="">🗑️</span> Hapus
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-5 gap-1.5 max-h-[220px] overflow-y-auto p-1" id="ten-slots-grid"></div>
+</div>
+<div class="pt-2 border-t border-slate-100 flex items-center gap-2">
+<button class="tactile-btn flex-1 flex items-center justify-center gap-2 bg-[#38b000] hover:bg-[#2f9600] py-2.5 px-4 rounded-xl font-['Outfit'] font-black text-white shadow-[0_3px_0_0_#206d00] cursor-pointer text-sm" id="run-code-btn" type="button">
+<span class="">JALANKAN KODE!</span>
+<span class="text-base">▶</span>
+</button>
+<button class="tactile-btn flex items-center justify-center gap-1 bg-slate-100 hover:bg-slate-200 py-2.5 px-3 rounded-xl font-['Outfit'] font-bold text-[#111c2d] shadow-[0_2px_0_0_#cbd5e1] cursor-pointer text-xs" id="speed-toggle-btn" title="Ubah Kecepatan Eksekusi" type="button">
+<span class="">⚡</span>
+<span class="" id="speed-label">1x</span>
+</button>
+<button class="tactile-btn flex items-center justify-center gap-1 bg-slate-100 hover:bg-slate-200 py-2.5 px-3 rounded-xl font-['Outfit'] font-bold text-slate-700 shadow-[0_2px_0_0_#cbd5e1] cursor-pointer text-xs" id="reset-code-btn" title="Atur Ulang Papan &amp; Kode" type="button">
+<span class="text-sm">↺</span>
+<span class="">Atur Ulang</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- VICTORY MODAL POPUP -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 transition-all" id="victory-modal">
+<div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl border-4 border-amber-300 text-center relative animate-pop overflow-hidden" id="victory-card">
+<div class="pointer-events-none absolute inset-0 overflow-hidden" id="confetti-container"></div>
+<div class="w-16 h-16 mx-auto -mt-12 mb-2 rounded-full bg-amber-400 border-4 border-white shadow-lg flex items-center justify-center text-3xl">⭐</div>
+<h2 class="font-['Outfit'] text-2xl font-black text-[#111c2d] tracking-tight" id="victory-headline">Hebat Sekali! 🎉</h2>
+<p class="font-['Outfit'] text-base text-[#206d00] font-bold mt-1" id="victory-subtitle">Baterai Berhasil Menyala!</p>
+<div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 my-3 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<span class="text-2xl">🟡</span>
+<span class="font-['Outfit'] text-2xl font-black text-amber-900" id="victory-reward-badge">+50 Koin Bintang!</span>
+</div>
+<p class="text-xs font-bold text-amber-800">Koin otomatis masuk ke kantong petualanganmu!</p>
+<div class="mt-1.5 inline-flex items-center gap-1.5 bg-emerald-100 text-[#206d00] px-3 py-0.5 rounded-full text-xs font-black font-['Outfit']" id="victory-unlock-badge">
+<span class="material-symbols-outlined text-[16px]">lock_open</span>
+<span class="" id="victory-unlock-text">Level Berikutnya Terbuka di Peta!</span>
+</div>
+</div>
+<!-- Tombol Modal Victory Dinamis (Tombol Reset khusus Level 15, tombol Lanjut untuk Level 1-14) -->
+<div class="flex flex-col sm:flex-row gap-2.5 mt-3" id="victory-buttons-container">
+<button aria-label="Main Lagi" class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-slate-100 hover:bg-slate-200 font-['Outfit'] font-bold text-slate-700 shadow-[0_2px_0_0_#cbd5e1] cursor-pointer text-xs" id="victory-replay-btn" onclick="window.replayCurrentLevel()" type="button">Main Lagi ↺</button>
+<button class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-[#006399] hover:bg-[#004972] font-['Outfit'] font-bold text-white shadow-[0_2px_0_0_#004972] cursor-pointer text-xs flex items-center justify-center gap-1" id="victory-shop-btn" type="button"><span class="">🛍️</span><span class="">Toko Codi</span></button>
+<button aria-label="Lanjut Level Berikutnya" class="tactile-btn flex-1 py-2.5 px-4 rounded-full bg-[#38b000] hover:bg-[#2f9600] font-['Outfit'] font-black text-white shadow-[0_3px_0_0_#206d00] cursor-pointer text-xs" id="victory-next-btn" onclick="window.goToNextLevel()" type="button">Lanjut Level ➡️</button>
+</div>
+</div>
+</div>
+<!-- FUNCTIONAL ROBO-CLOSET MARKETPLACE (LEMARI & TOKO CODI) MODAL -->
+<div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md items-center justify-center p-3 sm:p-5 transition-all duration-300 hidden" id="modal-toko-codi">
+<div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border-4 border-[#cde5ff] flex flex-col max-h-[92vh] overflow-hidden">
+<div class="px-5 py-3.5 bg-gradient-to-r from-sky-50 via-white to-amber-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-2xl bg-[#cde5ff] text-[#006399] flex items-center justify-center shadow-xs text-2xl">🛍️</div>
+<div>
+<h3 class="font-['Outfit'] text-lg font-black text-[#111c2d] leading-tight">Toko &amp; Lemari Codi</h3>
+<p class="text-xs text-slate-500 font-bold">Dandani Robot Codi dengan koin hasil belajarmu!</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 bg-[#ffdea9] px-3 py-1.5 rounded-full shadow-[0_2px_0_0_#c88f00]">
+<span class="font-['Outfit'] text-base font-black text-[#271900]" id="shop-coin-balance">0</span>
+<span class="text-base">🟡</span>
+</div>
+<button class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-black flex items-center justify-center text-sm shadow-xs cursor-pointer transition-colors" id="close-shop-btn" type="button">✕</button>
+</div>
+</div>
+<div class="p-5 grid grid-cols-1 md:grid-cols-12 gap-5 overflow-y-auto flex-1">
+<div class="md:col-span-5 flex flex-col items-center justify-between bg-gradient-to-b from-sky-50 via-emerald-50/40 to-white rounded-2xl p-4 border-2 border-emerald-100 shadow-xs">
+<div class="w-full flex items-center justify-between text-xs font-black text-[#006399] uppercase tracking-wider mb-2 font-['Outfit']">
+<span class="">Kamar Pas Codi 🪞</span>
+<span class="bg-white px-2 py-0.5 rounded-full border border-sky-200 text-[#206d00] font-bold" id="equipped-summary-badge">Gaya Standar</span>
+</div>
+<div class="relative w-48 h-56 bg-white/95 rounded-2xl border-2 border-sky-100 shadow-inner flex flex-col items-center justify-center my-auto overflow-visible" id="closet-avatar-preview-box"></div>
+<div class="w-full bg-white/90 p-2.5 rounded-xl border border-emerald-100 text-center">
+<p class="text-xs text-slate-600 font-bold" id="preview-effect-tip">✨ Dandani Codi! Aksesoris langsung aktif di Peta &amp; Arena Koding!</p>
+</div>
+</div>
+<div class="md:col-span-7 flex flex-col gap-2.5">
+<div class="flex items-center justify-between mb-0.5">
+<h4 class="font-['Outfit'] text-sm font-black text-[#111c2d] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[#006399] text-[20px]">styler</span>
+<span class="">Katalog Koleksi Aksesoris</span>
+</h4>
+<span class="text-xs text-slate-500 font-bold">Koleksi keren untuk Codi!</span>
+</div>
+<div class="flex flex-col gap-2.5" id="shop-items-list"></div>
+</div>
+</div>
+<div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-slate-500 shrink-0">
+<span class="">💡 Dapatkan +50 Koin Bintang setiap berhasil menuntaskan level!</span>
+<button class="px-4 py-1.5 bg-[#38b000] text-white rounded-full font-['Outfit'] font-black text-xs shadow-[0_2px_0_0_#206d00] cursor-pointer hover:bg-[#2f9600]" id="shop-done-btn" type="button">
+            Pakai &amp; Kembali Bermain ✓
+          </button>
+</div>
+</div>
+</div>
+<!-- CHILD-FRIENDLY USER PROFILE & SIGN IN MODAL -->
+<div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md hidden items-center justify-center p-3 sm:p-5 transition-all duration-300" id="profile-modal">
+<div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl border-4 border-emerald-200 overflow-hidden flex flex-col">
+<div class="p-4 bg-gradient-to-r from-emerald-100/70 via-white to-amber-50 border-b border-slate-200 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-2xl bg-[#38b000] text-white flex items-center justify-center text-xl shadow-xs">🎒</div>
+<div>
+<h3 class="font-['Outfit'] text-lg font-black text-[#111c2d] leading-tight">Profil Petualang Codi</h3>
+<p class="text-xs text-slate-500 font-bold">Simpan progres belajar kodingmu di pulau ini!</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-black flex items-center justify-center text-xs shadow-xs cursor-pointer transition-colors" id="close-profile-btn" type="button">✕</button>
+</div>
+<form class="p-5 space-y-4" id="profile-form">
+<div>
+<label class="block font-['Outfit'] text-xs font-black text-[#111c2d] mb-1" for="profile-name-input">Nama Penjelajah Cilik:</label>
+<div class="relative">
+<input class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-[#206d00] focus:ring-2 focus:ring-emerald-200 outline-none font-['Outfit'] text-sm font-bold text-[#111c2d] placeholder:text-slate-400" id="profile-name-input" maxlength="18" placeholder="Tulis namamu (misal: Alex, Budi, Sarah)..." required="" type="text">
+<span class="absolute right-3 top-2.5 text-base">✏️</span>
+</div>
+</div>
+<div>
+<label class="block font-['Outfit'] text-xs font-black text-[#111c2d] mb-1.5">Pilih Avatar Kartun Favoritmu:</label>
+<div class="grid grid-cols-6 gap-2" id="avatar-selector-grid"></div>
+</div>
+<div class="bg-amber-50/70 rounded-2xl p-3 border-2 border-amber-200 space-y-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="text-base">🔐</span>
+<span class="font-['Outfit'] text-xs font-black text-amber-950">Kode Simbol Rahasia (Tanpa Password Rumit)</span>
+</div>
+<span class="text-[10px] font-bold text-amber-800 bg-amber-200 px-2 py-0.5 rounded-full font-['Outfit']">Mudah Diingat</span>
+</div>
+<p class="text-[11px] text-amber-900 font-semibold leading-relaxed">
+              Gunakan 3 simbol ini untuk memulihkan progresmu di komputer atau tablet sekolah:
+            </p>
+<div class="flex items-center justify-center gap-3 py-1">
+<div class="px-3 py-1.5 bg-white rounded-xl border-2 border-amber-300 font-black text-base shadow-xs" id="symbol-1">🚀</div>
+<span class="text-amber-400 font-bold">•</span>
+<div class="px-3 py-1.5 bg-white rounded-xl border-2 border-amber-300 font-black text-base shadow-xs" id="symbol-2">🌟</div>
+<span class="text-amber-400 font-bold">•</span>
+<div class="px-3 py-1.5 bg-white rounded-xl border-2 border-amber-300 font-black text-base shadow-xs" id="symbol-3">🤖</div>
+<button class="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 px-2 py-1 rounded-lg font-bold ml-2 cursor-pointer transition-colors font-['Outfit']" id="regenerate-secret-symbols-btn" title="Acak simbol baru" type="button">Acak 🎲</button>
+</div>
+</div>
+<!-- Tombol Reset Semua Level di Profil -->
+<div class="pt-2 border-t border-slate-200 flex items-center justify-between">
+<button type="button" class="tactile-btn px-4 py-2 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 font-['Outfit'] font-black text-xs cursor-pointer shadow-xs flex items-center gap-1" onclick="window.resetAllProgressData()">
+<span>🔄</span> Mulai Ulang Dari Level 1
+</button>
+<div class="flex items-center gap-2">
+<button class="tactile-btn px-4 py-2 rounded-full font-['Outfit'] font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer" id="cancel-profile-btn" type="button">Batal</button>
+<button class="tactile-btn px-5 py-2.5 rounded-full font-['Outfit'] font-black text-xs bg-[#38b000] hover:bg-[#2f9600] text-white shadow-[0_3px_0_0_#206d00] cursor-pointer flex items-center gap-1.5" type="submit">
+<span class="">Simpan 💾</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+<!-- Toast Container -->
+<div class="fixed bottom-6 right-6 z-50 pointer-events-none flex flex-col gap-2" id="toast-container"></div>
+</main>
+<footer class="w-full bg-white border-t border-slate-200 py-4">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+<div class="flex items-center gap-2 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+<span class="material-symbols-outlined text-[#206d00] text-[18px]">verified_user</span>
+<span class="font-['Outfit'] text-xs text-[#206d00] font-black">100% Aman &amp; Ramah Anak</span>
+</div>
+<p class="text-xs text-slate-500 font-bold">© World Code Kids - Petualangan koding digital tanpa iklan untuk anak-anak</p>
+</div>
+</footer>
+<script>
+    const LEVELS_CONFIG = {
+      1: {
+        badge: "Level 1: ALGORITMA",
+        title: "Misi: Titik Awal Energi Bawah",
+        concept: "Konsep 1: Algoritma (Langkah Runtut)",
+        summary: "💡 Algoritma = Resep urutan langkah lurus.",
+        tip: "⭐ Trik Bintang: Cukup gunakan tepat 4 balok Maju untuk mencapai titik E1!",
+        speech: "Di Level 1, kita menyusun resep ALGORITMA lurus ke kanan menuju baterai di E1!",
+        dialog: "Halo! Di Level 1 kita belajar ALGORITMA lurus. Baterai ada di kolom E1. Susun balok Maju sebanyak 4 kali!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 4, row: 0 },
+        obstacles: [],
+        sensors: [],
+        allowedBlocks: ['forward'],
+        initialSlots: [],
+        hint: "Langkah: Maju ➔ Maju ➔ Maju ➔ Maju (Tujuan: E1)"
+      },
+      2: {
+        badge: "Level 2: SEQUENCE",
+        title: "Misi: Kelok Menghindari Batu",
+        concept: "Konsep 2: Sequence (Urutan Arah Berkelok)",
+        summary: "💡 Sequence = Urutan presisi belokan.",
+        tip: "🔄 Rencanakan belokan sebelum Codi menabrak batu karang di B1!",
+        speech: "Di Level 2, kita menavigasi SEQUENCE berkelok menghindari rintangan batu karang.",
+        dialog: "Ada batu karang di B1! Susun Sequence: Maju ➔ Kanan ➔ Maju ➔ Kiri ➔ Maju menuju B2!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 1, row: 1 },
+        obstacles: [{ col: 1, row: 0, icon: '🪨' }],
+        sensors: [],
+        allowedBlocks: ['forward', 'left', 'right'],
+        initialSlots: [],
+        hint: "Urutan: Maju ➔ Kanan ➔ Maju ➔ Kiri ➔ Maju (Tujuan: B2)"
+      },
+      3: {
+        badge: "Level 3: IF / ELSE",
+        title: "Misi: Sensor Laser Tengah",
+        concept: "Konsep 3: If / Else (Kondisi Sensorik)",
+        summary: "💡 IF/ELSE = Keputusan otomatis saat mendeteksi laser.",
+        tip: "📡 Sensor radar otomatis mengalihkan jalur Codi secara aman.",
+        speech: "Di Level 3, gunakan sensor radar IF/ELSE untuk melewati gerbang laser aktif!",
+        dialog: "Gunakan balok sensor IF/ELSE untuk melewati rintangan laser dan ambil baterai di D3!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 3, row: 2 },
+        obstacles: [{ col: 2, row: 0, icon: '⚡' }],
+        sensors: [{ col: 1, row: 0, icon: '📡' }],
+        allowedBlocks: ['if_obstacle', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Gunakan sensor radar di depan rintangan laser!"
+      },
+      4: {
+        badge: "Level 4: LOOP",
+        title: "Misi: Perulangan Koridor Panjang",
+        concept: "Konsep 4: Loop (Perulangan Langkah)",
+        summary: "💡 Loop = Hemat slot kode dengan pengulangan.",
+        tip: "⚡ 1 Balok Loop menggantikan 5 balok langkah sekaligus!",
+        speech: "Di Level 4, gunakan balok Loop untuk melangkah panjang secara efisien.",
+        dialog: "Gunakan balok [🔂 ULANGI 5x (Maju)] untuk mencapai ujung F1 dengan cepat!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 5, row: 0 },
+        obstacles: [],
+        sensors: [],
+        allowedBlocks: ['loop_4', 'forward'],
+        initialSlots: [],
+        hint: "Pasang balok Loop 4x lalu tambah 1x Maju (Tujuan: F1)"
+      },
+      5: {
+        badge: "Level 5: DEBUGGING",
+        title: "Misi: Pembersihan Bug Kutu Merah",
+        concept: "Konsep 5: Debugging (Perbaikan Kode Rusak)",
+        summary: "💡 Debugging = Membuang instruksi keliru.",
+        tip: "🐞 Hapus balok merah yang mengarah ke jurang!",
+        speech: "Di Level 5, temukan dan hapus balok bug merah di antrean program!",
+        dialog: "Antrean awal memiliki balok bug merah! Hapus dengan tombol (✕) lalu ganti arah yang benar ke C2.",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 2, row: 1 },
+        obstacles: [{ col: 1, row: 0, icon: '🕳️' }],
+        sensors: [],
+        allowedBlocks: ['forward', 'left', 'right'],
+        initialSlots: ['wrong_turn', 'forward', 'forward'],
+        hint: "Hapus balok merah pertama, lalu susun ulang menuju C2!"
+      },
+      6: {
+        badge: "Level 6: ALGORITMA + SEQUENCE",
+        title: "Misi: Labirin Serpentine Bawah",
+        concept: "Kombinasi 1: Navigasi Labirin Lanjutan",
+        summary: "💡 Rangkaian algoritma & belokan presisi.",
+        tip: "🎯 Hitung langkah petak dengan teliti sebelum berbelok.",
+        speech: "Selesaikan labirin berkelok baru dengan urutan resep algoritma yang tepat!",
+        dialog: "Susun langkah: Maju ➔ Maju ➔ Kanan ➔ Maju ➔ Kiri ➔ Maju menuju C3!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 2, row: 2 },
+        obstacles: [{ col: 1, row: 1, icon: '🪨' }, { col: 3, row: 0, icon: '🪨' }],
+        sensors: [],
+        allowedBlocks: ['forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Algoritma labirin: Maju 2x ➔ Kanan ➔ Maju ➔ Kiri ➔ Maju"
+      },
+      7: {
+        badge: "Level 7: LOOP + SEQUENCE",
+        title: "Misi: Pendakian Tangga Zig-Zag II",
+        concept: "Kombinasi 2: Modul Tangga Berulang",
+        summary: "💡 Tangga zig-zag mendaki rintangan dinding.",
+        tip: "🪜 Balok Tangga Zig-Zag otomatis menaikkan posisi Codi.",
+        speech: "Gunakan balok combo tangga zig-zag untuk melompati dinding balok batu!",
+        dialog: "Gunakan balok [🪜 Tangga Zig-Zag] untuk mendaki labirin dinding di tengah peta!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 3, row: 3 },
+        obstacles: [{ col: 1, row: 1, icon: '🧱' }, { col: 2, row: 2, icon: '🧱' }],
+        sensors: [],
+        allowedBlocks: ['loop_zigzag', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Gunakan Combo Block Tangga Zig-Zag!"
+      },
+      8: {
+        badge: "Level 8: SENSOR GANDA",
+        title: "Misi: Labirin Dua Gerbang Laser",
+        concept: "Kombinasi 3: Keputusan Sensor Ganda",
+        summary: "💡 Mengatasi dua titik laser beruntun.",
+        tip: "📡 Letakkan sensor di setiap titik persimpangan berbahaya.",
+        speech: "Hadapi dua gerbang laser dengan modul sensor IF/ELSE ganda!",
+        dialog: "Ada dua laser menghadang di jalur diagonal. Gunakan sensor cerdas untuk melewatinya!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 3, row: 3 },
+        obstacles: [{ col: 1, row: 1, icon: '⚡' }, { col: 2, row: 2, icon: '⚡' }],
+        sensors: [{ col: 0, row: 1, icon: '📡' }, { col: 2, row: 1, icon: '📡' }],
+        allowedBlocks: ['if_obstacle', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Gunakan sensor radar di setiap persimpangan laser."
+      },
+      9: {
+        badge: "Level 9: DEBUGGING SENSOR",
+        title: "Misi: Perbaikan Logika Sensor Cacat",
+        concept: "Kombinasi 4: Debugging Syarat Logika",
+        summary: "💡 Memperbaiki modul sensor yang salah arah.",
+        tip: "🐞 Buang instruksi keliru di slot nomor satu.",
+        speech: "Modul sensor di antrean mengarah ke jebakan jurang! Perbaiki segera!",
+        dialog: "Hapus balok rusak di awal antrean dan pasang sensor jalur aman menuju E2!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 4, row: 1 },
+        obstacles: [{ col: 1, row: 0, icon: '🕳️' }],
+        sensors: [{ col: 0, row: 0, icon: '📡' }],
+        allowedBlocks: ['if_correct_sensor', 'forward', 'right', 'left'],
+        initialSlots: ['wrong_turn', 'forward', 'forward'],
+        hint: "Bersihkan bug awal lalu arahkan ke E2."
+      },
+      10: {
+        badge: "Level 10: AUTOPILOT KORIDOR",
+        title: "Misi: Peluncuran Autopilot Cepat",
+        concept: "Kombinasi 5: Autopilot Terintegrasi",
+        summary: "💡 Autopilot meluncur bebas tanpa tabrakan.",
+        tip: "🚀 Autopilot sangat handal untuk menerobos koridor panjang.",
+        speech: "Gunakan balok Autopilot Koridor untuk meluncur otomatis ke tujuan akhir!",
+        dialog: "Aktifkan balok [🚀 Autopilot Koridor] untuk mencapai baterai di F3 secara instan!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 5, row: 3 },
+        obstacles: [{ col: 2, row: 1, icon: '🧱' }, { col: 4, row: 2, icon: '🧱' }],
+        sensors: [{ col: 1, row: 1, icon: '📡' }],
+        allowedBlocks: ['smart_corridor_loop', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Gunakan balok khusus Autopilot Koridor Pintar."
+      },
+      11: {
+        badge: "Level 11: GERBANG LOGIKA",
+        title: "Misi: Saklar Sentral Jaringan",
+        concept: "Konsep 6: Gerbang Logika Saklar",
+        summary: "💡 Logika syarat saklar energi tingkat lanjut.",
+        tip: "⚡ Perhatikan posisi saklar daya sebelum memasang balok.",
+        speech: "Aktifkan gerbang logika saklar untuk membuka aliran listrik ke baterai F2!",
+        dialog: "Gunakan kondisi logika IF untuk memutar arah Codi melewati saklar pusat!",
+        start: { col: 0, row: 2, dir: 'E' },
+        battery: { col: 5, row: 2 },
+        obstacles: [{ col: 3, row: 2, icon: '⚡' }],
+        sensors: [{ col: 2, row: 2, icon: '📡' }],
+        allowedBlocks: ['if_obstacle', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Gunakan sensor JIKA di depan kotak saklar energi."
+      },
+      12: {
+        badge: "Level 12: OPTIMASI KODE",
+        title: "Misi: Efisiensi Kodenya Maksimal",
+        concept: "Konsep 7: Optimasi Balok Minimal",
+        summary: "💡 Menyusun kode paling ringkas dan hemat.",
+        tip: "⚡ Gunakan kombinasi Loop 5x untuk mencapai ujung F5!",
+        speech: "Uji efisiensi kodingmu! Capai target dengan jumlah balok paling sedikit.",
+        dialog: "Gunakan modul perulangan loop untuk mencapai titik F5 dengan efisien!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 5, row: 5 },
+        obstacles: [],
+        sensors: [],
+        allowedBlocks: ['loop_4', 'forward', 'right'],
+        initialSlots: [],
+        hint: "Gunakan Loop dan belokan minimal ke F5."
+      },
+      13: {
+        badge: "Level 13: FUNGSI MODULAR",
+        title: "Misi: Terowongan Modular Berbatu",
+        concept: "Konsep 8: Pola Fungsi Modular",
+        summary: "💡 Membungkus rangkaian fungsi modular.",
+        tip: "🧩 Modul fungsi mempercepat penyelesaian terowongan rumit.",
+        speech: "Gunakan fungsi modular berulang untuk menembus terowongan berbatu!",
+        dialog: "Susun pola modular zig-zag berulang untuk mendaki labirin karang tingkat tinggi!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 4, row: 4 },
+        obstacles: [{ col: 1, row: 1, icon: '🪨' }, { col: 3, row: 3, icon: '🪨' }],
+        sensors: [],
+        allowedBlocks: ['loop_zigzag', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Manfaatkan balok fungsi Modular Zig-Zag."
+      },
+      14: {
+        badge: "Level 14: MASTER DEBUGGER",
+        title: "Misi: Pembersihan Multi-Bug Kompleks",
+        concept: "Konsep 9: Debugging Multi-Step Lanjutan",
+        summary: "💡 Membersihkan rentetan bug dan jalur buntu.",
+        tip: "🐞 Bersihkan semua balok merah yang berserakan di awal.",
+        speech: "Tantangan Master Debugger! Bersihkan seluruh bug kode sebelum Codi tersesat.",
+        dialog: "Hapus dua balok bug merah yang salah arah, lalu susun rute bersih menuju D4!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 3, row: 3 },
+        obstacles: [{ col: 1, row: 2, icon: '🕳️' }],
+        sensors: [],
+        allowedBlocks: ['forward', 'right', 'left'],
+        initialSlots: ['wrong_turn', 'wrong_turn', 'forward'],
+        hint: "Buang balok rusak dan buat rute baru ke D4."
+      },
+      15: {
+        badge: "Level 15: PUNCAK SIRKUIT (MASTER)",
+        title: "Misi: Gerbang Utama Kota Masa Depan",
+        concept: "Puncak Master: Grandmaster Algoritma",
+        summary: "💡 Ujian akhir penggabungan seluruh ilmu koding.",
+        tip: "👑 Selamat datang di level puncak! Gunakan seluruh keahlianmu.",
+        speech: "Level Puncak Terakhir! Nyalakan baterai inti utama dan buka Kota Masa Depan!",
+        dialog: "Gabungkan Sensor, Autopilot, dan Sequence untuk menyalakan Inti Daya utama di E5!",
+        start: { col: 0, row: 0, dir: 'E' },
+        battery: { col: 4, row: 5 },
+        obstacles: [{ col: 1, row: 1, icon: '⚡' }, { col: 3, row: 3, icon: '🪨' }, { col: 4, row: 4, icon: '⚡' }],
+        sensors: [{ col: 0, row: 1, icon: '📡' }, { col: 2, row: 3, icon: '📡' }],
+        allowedBlocks: ['smart_corridor_loop', 'if_obstacle', 'forward', 'right', 'left'],
+        initialSlots: [],
+        hint: "Gunakan kombinasi Sensor + Autopilot menuju puncak level 15!"
+      }
+    };
+
+    const NODE_COORDINATES = {
+      1:  { x: 32, y: 88 },
+      2:  { x: 58, y: 88 },
+      3:  { x: 84, y: 86 },
+      4:  { x: 78, y: 70 },
+      5:  { x: 50, y: 70 },
+      6:  { x: 20, y: 70 },
+      7:  { x: 24, y: 52 },
+      8:  { x: 50, y: 52 },
+      9:  { x: 78, y: 52 },
+      10: { x: 80, y: 34 },
+      11: { x: 50, y: 34 },
+      12: { x: 20, y: 34 },
+      13: { x: 28, y: 16 },
+      14: { x: 50, y: 16 },
+      15: { x: 50, y: 4  }
+    };
+
+    let currentLevel = 1;
+    let highestUnlockedLevel = 1;
+    let coins = 0;
+    const MAX_SLOTS = 20;
+    let codeQueue = [];
+    let isRunning = false;
+    let executionSpeed = 500;
+    let codiState = { col: 0, row: 0, dir: 'E' };
+
+    const SHOP_ITEMS = [
+      { id: 'propeller_hat', name: 'Topi Baling-baling 🧢', price: 50, desc: 'Berputar lucu saat Codi melangkah!', icon: '🧢', previewType: 'hat' },
+      { id: 'star_glasses', name: 'Kacamata Bintang Keren 🕶️', price: 50, desc: 'Efek kilau bintang saat menjalankan kode!', icon: '🕶️', previewType: 'glasses' },
+      { id: 'golden_antenna', name: 'Antena Satelit Emas 📡', price: 100, desc: 'Efek radar sensor bercahaya di kepala!', icon: '📡', previewType: 'antenna' },
+      { id: 'neon_paint', name: 'Cat Bodi Neon Hijau 🟢', price: 100, desc: 'Mengubah warna bodi Codi jadi hijau neon terang!', icon: '🟢', previewType: 'skin' }
+    ];
+
+    let userInventory = { owned: [], equipped: [] };
+    let userProfile = { name: 'Alex', avatar: '🌟', title: 'Penjelajah Tk. 1', secretCode: ['🚀', '🌟', '🤖'], isLoggedIn: true };
+
+    const AVATAR_OPTIONS = ['🌟', '🚀', '🐱', '🤖', '🦖', '👑'];
+    const SECRET_SYMBOLS_POOL = ['🚀', '🌟', '🤖', '⚡', '🛸', '⭐', '🌈', '🧩', '💎'];
+
+    const gameOverlay = document.getElementById('game-overlay');
+    const overlayLevelBadge = document.getElementById('overlay-level-badge');
+    const overlayLevelTitle = document.getElementById('overlay-level-title');
+    const overlayDialogText = document.getElementById('overlay-dialog-text');
+    const codiConceptBadge = document.getElementById('codi-concept-badge');
+    const codiConceptSummary = document.getElementById('codi-concept-summary');
+    const strategyAnalogyText = document.getElementById('strategy-analogy-text');
+    const strategyStepsText = document.getElementById('strategy-steps-text');
+    const gridGoalLabel = document.getElementById('grid-goal-label');
+    const interactiveGridBoard = document.getElementById('interactive-grid-board');
+    const blockPaletteContainer = document.getElementById('block-palette-container');
+    const tenSlotsGrid = document.getElementById('ten-slots-grid');
+    const slotCounter = document.getElementById('slot-counter');
+    const clearAllSlotsBtn = document.getElementById('clear-all-slots-btn');
+    const runCodeBtn = document.getElementById('run-code-btn');
+    const resetCodeBtn = document.getElementById('reset-code-btn');
+    const speedToggleBtn = document.getElementById('speed-toggle-btn');
+    const speedLabel = document.getElementById('speed-label');
+    const globalCoinCount = document.getElementById('global-coin-count');
+    const overlayCoinCount = document.getElementById('overlay-coin-count');
+    const shopCoinBalance = document.getElementById('shop-coin-balance');
+    const victoryModal = document.getElementById('victory-modal');
+    const victoryButtonsContainer = document.getElementById('victory-buttons-container');
+    const confettiContainer = document.getElementById('confetti-container');
+
+    const modalTokoCodi = document.getElementById('modal-toko-codi');
+    const closeShopBtn = document.getElementById('close-shop-btn');
+    const shopDoneBtn = document.getElementById('shop-done-btn');
+    const shopItemsList = document.getElementById('shop-items-list');
+    const equippedSummaryBadge = document.getElementById('equipped-summary-badge');
+
+    const progressText = document.getElementById('progress-text');
+    const islandBatteryPct = document.getElementById('island-battery-pct');
+    const islandBatteryBar = document.getElementById('island-battery-bar');
+    const heroPlayLabel = document.getElementById('hero-play-label');
+    const mapConceptBadge = document.getElementById('map-concept-badge');
+    const mapHintText = document.getElementById('map-hint-text');
+    const islandMapNodesContainer = document.getElementById('island-map-nodes-container');
+    const svgPathsContainer = document.getElementById('svg-paths-container');
+    const staticFallbackPath = document.getElementById('static-fallback-path');
+    const cityLockBadge = document.getElementById('city-lock-badge');
+    const cityLockSubtext = document.getElementById('city-lock-subtext');
+
+    const hudProfileContainer = document.getElementById('hud-profile-container');
+    const profileModal = document.getElementById('profile-modal');
+    const closeProfileBtn = document.getElementById('close-profile-btn');
+    const cancelProfileBtn = document.getElementById('cancel-profile-btn');
+    const profileForm = document.getElementById('profile-form');
+    const profileNameInput = document.getElementById('profile-name-input');
+    const avatarSelectorGrid = document.getElementById('avatar-selector-grid');
+    const symbol1 = document.getElementById('symbol-1');
+    const symbol2 = document.getElementById('symbol-2');
+    const symbol3 = document.getElementById('symbol-3');
+    const regenerateSecretSymbolsBtn = document.getElementById('regenerate-secret-symbols-btn');
+    const toastContainer = document.getElementById('toast-container');
+
+    let tempSelectedAvatar = '🌟';
+
+    function loadSavedUserData() {
+      try {
+        const saved = localStorage.getItem('world_code_kids_data');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.profile) userProfile = parsed.profile;
+          if (parsed.highestUnlockedLevel) highestUnlockedLevel = parsed.highestUnlockedLevel;
+          if (parsed.coins !== undefined) coins = parsed.coins;
+          if (parsed.userInventory) userInventory = parsed.userInventory;
+        }
+      } catch (e) {
+        console.warn("Storage load error:", e);
+      }
+    }
+
+    function saveUserData(showFeedback = false) {
+      try {
+        const dataToSave = { profile: userProfile, highestUnlockedLevel, coins, userInventory };
+        localStorage.setItem('world_code_kids_data', JSON.stringify(dataToSave));
+        if (showFeedback) {
+          showToast("Progresmu tersimpan otomatis! ✨", "success");
+        }
+      } catch (e) {
+        console.warn("Storage save error:", e);
+      }
+    }
+
+    window.resetAllProgressData = function() {
+      if (confirm("Yakin ingin mereset semua progres kembali dari awal (Level 1)?")) {
+        highestUnlockedLevel = 1;
+        coins = 0;
+        currentLevel = 1;
+        userInventory = { owned: [], equipped: [] };
+        localStorage.removeItem('world_code_kids_data');
+        closeProfileModal();
+        renderProfileHUD();
+        renderMapNodes();
+        updateShopCoinsDisplay();
+        showToast("Semua progres berhasil direset dari awal! 🔄", "info");
+        speakIndonesian("Progres direset. Ayo mulai petualangan dari level 1!");
+      }
+    };
+
+    function showToast(message, type = "info") {
+      if (!toastContainer) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast-animate flex items-center gap-2 bg-white text-slate-800 px-4 py-2.5 rounded-2xl shadow-xl border-2 border-emerald-300 font-["Outfit"] text-xs font-black select-none pointer-events-auto';
+      toast.innerHTML = `<span class="text-base">${type === 'success' ? '⭐' : '🎒'}</span><span>${message}</span>`;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    window.isAudioMuted = localStorage.getItem('wck_audio_muted') === 'true';
+
+    function speakIndonesian(text) {
+      if (window.isAudioMuted) {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        return;
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'id-ID';
+        utterance.pitch = 1.15;
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    window.toggleNarratorAudio = function() {
+      window.isAudioMuted = !window.isAudioMuted;
+      localStorage.setItem('wck_audio_muted', window.isAudioMuted ? 'true' : 'false');
+      if (window.isAudioMuted) {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        showToast('Suara narator dimatikan 🔇', 'info');
+      } else {
+        showToast('Suara narator diaktifkan! 🔊', 'success');
+        speakIndonesian(LEVELS_CONFIG[currentLevel]?.speech || 'Suara narator aktif!');
+      }
+      updateAudioUI();
+    };
+
+    function updateAudioUI() {
+      const globalBtn = document.getElementById('global-audio-btn');
+      const gameAudioBtn = document.getElementById('game-audio-read-btn');
+      if (globalBtn) {
+        if (window.isAudioMuted) {
+          globalBtn.innerHTML = '<span class="material-symbols-outlined text-rose-500 text-[18px]">volume_off</span>';
+        } else {
+          globalBtn.innerHTML = '<span class="material-symbols-outlined text-slate-700 text-[18px]">volume_up</span>';
+        }
+      }
+      if (gameAudioBtn) {
+        if (window.isAudioMuted) {
+          gameAudioBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">volume_off</span><span>Mute 🔇</span>';
+        } else {
+          gameAudioBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">volume_up</span><span>Dengarkan 🔊</span>';
+        }
+      }
+    }
+
+    speedToggleBtn?.addEventListener('click', () => {
+      if (executionSpeed === 500) {
+        executionSpeed = 240;
+        speedLabel.textContent = '2x ⚡';
+      } else if (executionSpeed === 240) {
+        executionSpeed = 750;
+        speedLabel.textContent = '0.5x 🐢';
+      } else {
+        executionSpeed = 500;
+        speedLabel.textContent = '1x';
+      }
+    });
+
+    function renderProfileHUD() {
+      if (!hudProfileContainer) return;
+      hudProfileContainer.innerHTML = '';
+      if (userProfile.isLoggedIn) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tactile-btn flex items-center gap-2 bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-full border border-emerald-200/80 shadow-xs cursor-pointer text-left transition-all';
+        btn.innerHTML = `
+          <div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-sm shadow-inner shrink-0">${userProfile.avatar}</div>
+          <div class="hidden xl:flex flex-col">
+            <span class="font-['Outfit'] text-xs font-black text-slate-800 leading-tight">${userProfile.name}</span>
+            <span class="text-[10px] font-bold text-[#206d00] leading-tight">${userProfile.title}</span>
+          </div>
+          <span class="text-xs text-slate-400">✏️</span>
+        `;
+        btn.onclick = openProfileModal;
+        hudProfileContainer.appendChild(btn);
+      } else {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tactile-btn flex items-center gap-1.5 bg-[#84fe58] hover:bg-[#69e03e] text-[#052100] px-3.5 py-1.5 rounded-full font-["Outfit"] text-xs font-black shadow-[0_2px_0_0_#206d00] cursor-pointer';
+        btn.innerHTML = `<span class="text-sm">👤</span><span>Masuk / Simpan Progres</span>`;
+        btn.onclick = openProfileModal;
+        hudProfileContainer.appendChild(btn);
+      }
+    }
+
+    function openProfileModal() {
+      if (profileNameInput) profileNameInput.value = userProfile.name;
+      tempSelectedAvatar = userProfile.avatar || '🌟';
+      renderAvatarSelectorGrid();
+      renderSecretSymbols();
+      profileModal.classList.remove('hidden');
+      profileModal.classList.add('flex');
+      speakIndonesian("Kelola profil petualang kodingmu disini!");
+    }
+
+    function closeProfileModal() {
+      profileModal.classList.add('hidden');
+      profileModal.classList.remove('flex');
+    }
+
+    closeProfileBtn?.addEventListener('click', closeProfileModal);
+    cancelProfileBtn?.addEventListener('click', closeProfileModal);
+
+    function renderAvatarSelectorGrid() {
+      if (!avatarSelectorGrid) return;
+      avatarSelectorGrid.innerHTML = '';
+      AVATAR_OPTIONS.forEach(emoji => {
+        const isSelected = emoji === tempSelectedAvatar;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `tactile-btn w-11 h-11 rounded-2xl flex items-center justify-center text-xl transition-all cursor-pointer ${isSelected ? 'bg-[#38b000] text-white scale-105 ring-2 ring-emerald-400 shadow-xs' : 'bg-slate-100 hover:bg-slate-200'}`;
+        btn.textContent = emoji;
+        btn.onclick = () => { tempSelectedAvatar = emoji; renderAvatarSelectorGrid(); };
+        avatarSelectorGrid.appendChild(btn);
+      });
+    }
+
+    function renderSecretSymbols() {
+      if (symbol1) symbol1.textContent = userProfile.secretCode[0] || '🚀';
+      if (symbol2) symbol2.textContent = userProfile.secretCode[1] || '🌟';
+      if (symbol3) symbol3.textContent = userProfile.secretCode[2] || '🤖';
+    }
+
+    regenerateSecretSymbolsBtn?.addEventListener('click', () => {
+      const shuffled = [...SECRET_SYMBOLS_POOL].sort(() => 0.5 - Math.random());
+      userProfile.secretCode = [shuffled[0], shuffled[1], shuffled[2]];
+      renderSecretSymbols();
+    });
+
+    profileForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      userProfile.name = profileNameInput.value.trim() || 'Alex';
+      userProfile.avatar = tempSelectedAvatar;
+      userProfile.isLoggedIn = true;
+      userProfile.title = highestUnlockedLevel >= 15 ? 'Master Algoritma 👑' : highestUnlockedLevel >= 8 ? 'Penjelajah Tk. 2 🚀' : 'Penjelajah Tk. 1 ⭐';
+      closeProfileModal();
+      renderProfileHUD();
+      saveUserData(true);
+      speakIndonesian(`Selamat datang, ${userProfile.name}! Petualanganmu siap berlanjut.`);
+    });
+
+    function renderCodiAvatar(size = 'md', containerId = null) {
+      const hasHat = userInventory.equipped.includes('propeller_hat');
+      const hasGlasses = userInventory.equipped.includes('star_glasses');
+      const hasAntenna = userInventory.equipped.includes('golden_antenna');
+      const hasNeon = userInventory.equipped.includes('neon_paint');
+
+      let baseWidth = 'w-10', baseHeight = 'h-10', headWidth = 'w-9', headHeight = 'h-7', eyeSize = 'w-2 h-2', mouthWidth = 'w-4 h-1', hatScale = 'scale-90', glassesSize = 'text-xs', antennaIcon = 'text-xs';
+      if (size === 'xl') {
+        baseWidth = 'w-44'; baseHeight = 'h-48'; headWidth = 'w-32'; headHeight = 'h-24'; eyeSize = 'w-4 h-4'; mouthWidth = 'w-10 h-2'; hatScale = 'scale-125'; glassesSize = 'text-2xl'; antennaIcon = 'text-2xl';
+      } else if (size === 'sm') {
+        baseWidth = 'w-8'; baseHeight = 'h-8'; headWidth = 'w-7'; headHeight = 'h-6'; eyeSize = 'w-1.5 h-1.5'; mouthWidth = 'w-3 h-0.5'; hatScale = 'scale-75'; glassesSize = 'text-[9px]'; antennaIcon = 'text-[9px]';
+      }
+
+      const headBg = hasNeon ? 'bg-gradient-to-b from-emerald-200 to-emerald-300 border-2 border-emerald-500' : 'bg-gradient-to-b from-cyan-100 to-sky-200 border-2 border-cyan-400';
+      const earBg = hasNeon ? 'bg-emerald-400' : 'bg-cyan-400';
+      const cheekBg = hasNeon ? 'bg-emerald-400/40' : 'bg-pink-300/60';
+
+      const html = `
+        <div class="relative flex flex-col items-center justify-center select-none ${baseWidth} ${baseHeight}">
+          ${hasHat ? `<div class="absolute -top-3 z-30 flex flex-col items-center pointer-events-none ${hatScale}"><div class="w-10 h-2 bg-amber-400 rounded-full animate-spin shadow-xs flex items-center justify-center" style="animation-duration: 0.7s;"></div><div class="w-1 h-1.5 bg-amber-600"></div><div class="w-12 h-2 bg-rose-500 rounded-t-full shadow-xs"></div></div>` : ''}
+          ${hasAntenna ? `<div class="absolute -top-3 right-0.5 z-20 pointer-events-none flex items-center"><span class="${antennaIcon} animate-pulse">📡</span><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping -ml-1"></span></div>` : ''}
+          ${!hasAntenna ? `<div class="flex flex-col items-center pointer-events-none -mb-0.5"><div class="w-1.5 h-1.5 rounded-full ${hasNeon ? 'bg-emerald-500' : 'bg-sky-400'} animate-ping"></div><div class="w-0.5 h-1.5 ${hasNeon ? 'bg-emerald-600' : 'bg-cyan-600'}"></div></div>` : ''}
+          <div class="relative flex items-center justify-center">
+            <div class="w-1.5 h-3 ${earBg} rounded-l-md -mr-0.5 shadow-xs"></div>
+            <div class="${headWidth} ${headHeight} ${headBg} rounded-2xl shadow-md flex flex-col items-center justify-center relative overflow-hidden">
+              <div class="flex items-center justify-center gap-2 relative z-10">
+                <div class="${eyeSize} rounded-full bg-cyan-950 flex items-center justify-center shadow-inner"><span class="w-1 h-1 rounded-full bg-cyan-300"></span></div>
+                <div class="${eyeSize} rounded-full bg-cyan-950 flex items-center justify-center shadow-inner"><span class="w-1 h-1 rounded-full bg-cyan-300"></span></div>
+                ${hasGlasses ? `<div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none ${glassesSize}">🕶️</div>` : ''}
+              </div>
+              <div class="flex items-center justify-between w-full px-2 mt-1">
+                <div class="w-1 h-1 rounded-full ${cheekBg}"></div>
+                <div class="${mouthWidth} ${hasNeon ? 'bg-emerald-700' : 'bg-cyan-700'} rounded-full"></div>
+                <div class="w-1 h-1 rounded-full ${cheekBg}"></div>
+              </div>
+            </div>
+            <div class="w-1.5 h-3 ${earBg} rounded-r-md -ml-0.5 shadow-xs"></div>
+          </div>
+        </div>
+      `;
+      if (containerId) {
+        const container = document.getElementById(containerId);
+        if (container) container.innerHTML = html;
+      }
+      return html;
+    }
+
+    function renderMapNodes() {
+      if (!islandMapNodesContainer) return;
+      islandMapNodesContainer.innerHTML = '';
+      if (svgPathsContainer) svgPathsContainer.innerHTML = '';
+
+      if (svgPathsContainer) {
+        for (let lvl = 1; lvl < 15; lvl++) {
+          const fromNode = NODE_COORDINATES[lvl];
+          const toNode = NODE_COORDINATES[lvl + 1];
+          const isSegmentUnlocked = lvl < highestUnlockedLevel;
+
+          const x1 = (fromNode.x / 100) * 1000;
+          const y1 = (fromNode.y / 100) * 760;
+          const x2 = (toNode.x / 100) * 1000;
+          const y2 = (toNode.y / 100) * 760;
+
+          const dx = x2 - x1, dy = y2 - y1;
+          const cx1 = x1 + dx * 0.4, cy1 = y1 + dy * 0.1;
+          const cx2 = x1 + dx * 0.6, cy2 = y2 - dy * 0.1;
+          const d = `M ${x1},${y1} C ${cx1},${cy1} ${cx2},${cy2} ${x2},${y2}`;
+
+          const baseWire = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          baseWire.setAttribute('d', d);
+          baseWire.setAttribute('fill', 'none');
+          baseWire.setAttribute('stroke', '#cbd5e1');
+          baseWire.setAttribute('stroke-width', '7');
+          baseWire.setAttribute('stroke-dasharray', '8 8');
+          baseWire.setAttribute('stroke-linecap', 'round');
+          svgPathsContainer.appendChild(baseWire);
+
+          if (isSegmentUnlocked) {
+            const activeWire = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            activeWire.setAttribute('d', d);
+            activeWire.setAttribute('fill', 'none');
+            activeWire.setAttribute('stroke', '#38b000');
+            activeWire.setAttribute('stroke-width', '7');
+            activeWire.setAttribute('stroke-linecap', 'round');
+            activeWire.setAttribute('filter', 'url(#wire-neon-glow)');
+            activeWire.setAttribute('class', 'active-circuit-pulse');
+            svgPathsContainer.appendChild(activeWire);
+          }
+        }
+      }
+
+      if (staticFallbackPath && svgPathsContainer && svgPathsContainer.children.length > 0) {
+        staticFallbackPath.style.display = 'none';
+      }
+
+      for (let lvl = 1; lvl <= 15; lvl++) {
+        const coord = NODE_COORDINATES[lvl];
+        const isCompleted = lvl < highestUnlockedLevel;
+        const isActive = lvl === highestUnlockedLevel;
+        const isUnlocked = lvl <= highestUnlockedLevel;
+
+        const nodeWrapper = document.createElement('div');
+        nodeWrapper.className = `absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center transition-transform hover:scale-110 select-none ${isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-85'}`;
+        nodeWrapper.style.left = `${coord.x}%`;
+        nodeWrapper.style.top = `${coord.y}%`;
+        nodeWrapper.onclick = () => {
+          if (isUnlocked) {
+            openGameOverlayAt(lvl);
+          } else {
+            speakIndonesian(`Level ${lvl} masih terkunci! Selesaikan level sebelumnya dulu ya.`);
+          }
+        };
+
+        if (isActive) {
+          const mascotWrapper = document.createElement('div');
+          mascotWrapper.className = "absolute -top-24 z-30 flex flex-col items-center pointer-events-none";
+          mascotWrapper.innerHTML = `
+            <div class="mb-1 bg-white px-2.5 py-1 rounded-xl shadow-lg border-2 border-emerald-300 flex items-center gap-1.5 animate-bounce" style="animation-duration: 2.2s;">
+              <span class="text-xs">🤖</span>
+              <p class="font-['Outfit'] text-[11px] text-[#111c2d] font-black leading-tight">Ayo Taklukkan Lvl ${lvl}! ⭐</p>
+            </div>
+            ${renderCodiAvatar('md')}
+          `;
+          nodeWrapper.appendChild(mascotWrapper);
+        }
+
+        const circle = document.createElement('div');
+        let circleClasses = '', circleInner = '';
+        if (isActive) {
+          circleClasses = 'w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#38b000] text-white flex flex-col items-center justify-center shadow-[0_4px_0_0_#206d00] border-4 border-white animate-pulse';
+          circleInner = `<span class="material-symbols-outlined text-[22px]">play_arrow</span><span class="font-['Outfit'] text-[11px] font-black leading-none">${lvl}</span>`;
+        } else if (isCompleted) {
+          circleClasses = 'w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md border-2 border-emerald-200';
+          circleInner = `<span class="material-symbols-outlined text-[20px]">done</span>`;
+        } else {
+          circleClasses = 'w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center shadow-xs border border-slate-300';
+          circleInner = `<span class="material-symbols-outlined text-[16px]">lock</span>`;
+        }
+
+        circle.className = circleClasses;
+        circle.innerHTML = circleInner;
+        nodeWrapper.appendChild(circle);
+
+        const textLabel = document.createElement('span');
+        textLabel.className = `mt-1 font-['Outfit'] text-[11px] whitespace-nowrap ${isActive ? 'text-[#206d00] font-black' : isCompleted ? 'text-emerald-700 font-bold' : 'text-slate-500 font-bold'}`;
+        textLabel.textContent = lvl === 15 ? 'Puncak Lvl 15' : `Lvl ${lvl}`;
+        nodeWrapper.appendChild(textLabel);
+
+        islandMapNodesContainer.appendChild(nodeWrapper);
+      }
+
+      const completedCount = Math.max(0, highestUnlockedLevel - 1);
+      const pct = Math.min(100, Math.round((completedCount / 15) * 100));
+      if (islandBatteryPct) islandBatteryPct.textContent = `${pct}%`;
+      if (islandBatteryBar) islandBatteryBar.style.width = `${pct}%`;
+      if (progressText) progressText.textContent = `${completedCount} / 15 Selesai`;
+      if (heroPlayLabel) heroPlayLabel.textContent = `MAIN LEVEL ${highestUnlockedLevel} ▷`;
+
+      if (highestUnlockedLevel >= 15 && cityLockBadge && cityLockSubtext) {
+        cityLockBadge.innerHTML = '<span class="material-symbols-outlined text-[26px] text-emerald-600">lock_open</span>';
+        cityLockSubtext.textContent = 'TERBUKA! SELAMAT DATANG DI KOTA MASA DEPAN';
+        cityLockSubtext.classList.remove('text-slate-500');
+        cityLockSubtext.classList.add('text-[#206d00]');
+      }
+    }
+
+    window.openGameOverlayAt = function(lvl) {
+      if (lvl > highestUnlockedLevel) {
+        speakIndonesian(`Level ${lvl} masih terkunci!`);
+        return;
+      }
+      currentLevel = lvl;
+      loadLevel(currentLevel);
+      gameOverlay.classList.remove('hidden');
+      gameOverlay.classList.add('flex');
+    };
+
+    document.getElementById('play-level-btn')?.addEventListener('click', () => openGameOverlayAt(highestUnlockedLevel));
+    document.getElementById('nav-arena-btn')?.addEventListener('click', () => openGameOverlayAt(highestUnlockedLevel));
+    document.getElementById('close-overlay-btn')?.addEventListener('click', () => {
+      gameOverlay.classList.add('hidden');
+      gameOverlay.classList.remove('flex');
+      victoryModal.classList.add('hidden');
+      victoryModal.classList.remove('flex');
+      renderMapNodes();
+    });
+
+    function openShopModal() {
+      updateShopCoinsDisplay();
+      renderShopItems();
+      updateCodiAppearanceEverywhere();
+      modalTokoCodi.classList.remove('hidden');
+      modalTokoCodi.classList.add('flex');
+      speakIndonesian("Selamat datang di Toko dan Lemari Robot Codi!");
+    }
+
+    function closeShopModal() {
+      modalTokoCodi.classList.add('hidden');
+      modalTokoCodi.classList.remove('flex');
+      renderMapNodes();
+      renderBoard();
+    }
+
+    document.getElementById('header-toko-btn')?.addEventListener('click', openShopModal);
+    document.getElementById('nav-lemari-btn')?.addEventListener('click', openShopModal);
+    document.getElementById('overlay-toko-btn')?.addEventListener('click', openShopModal);
+    document.getElementById('victory-shop-btn')?.addEventListener('click', () => {
+      victoryModal.classList.add('hidden');
+      victoryModal.classList.remove('flex');
+      openShopModal();
+    });
+    closeShopBtn?.addEventListener('click', closeShopModal);
+    shopDoneBtn?.addEventListener('click', closeShopModal);
+
+    function updateShopCoinsDisplay() {
+      if (shopCoinBalance) shopCoinBalance.textContent = coins;
+      if (globalCoinCount) globalCoinCount.textContent = coins;
+      if (overlayCoinCount) overlayCoinCount.textContent = coins;
+    }
+
+    function renderShopItems() {
+      if (!shopItemsList) return;
+      shopItemsList.innerHTML = '';
+      SHOP_ITEMS.forEach(item => {
+        const isOwned = userInventory.owned.includes(item.id);
+        const isEquipped = userInventory.equipped.includes(item.id);
+
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-2xl border-2 flex items-center justify-between gap-3 transition-all ${isEquipped ? 'bg-emerald-50 border-emerald-400 shadow-xs' : isOwned ? 'bg-sky-50/70 border-sky-200' : 'bg-white border-slate-200 hover:border-slate-300'}`;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'flex items-center gap-3 min-w-0';
+        infoDiv.innerHTML = `
+          <div class="w-11 h-11 rounded-xl ${isEquipped ? 'bg-emerald-200' : 'bg-slate-100'} flex items-center justify-center text-2xl shrink-0 shadow-inner">${item.icon}</div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h5 class="text-xs sm:text-sm font-['Outfit'] font-black text-slate-800 truncate">${item.name}</h5>
+              ${isEquipped ? '<span class="bg-[#206d00] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full font-[\'Outfit\']">DIPAKAI</span>' : ''}
+            </div>
+            <p class="text-[11px] text-slate-500 font-bold truncate">${item.desc}</p>
+          </div>
+        `;
+
+        const actionBtn = document.createElement('button');
+        actionBtn.type = 'button';
+        actionBtn.className = 'tactile-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-[\'Outfit\'] font-black cursor-pointer shadow-xs';
+
+        if (isEquipped) {
+          actionBtn.className += ' bg-emerald-600 hover:bg-emerald-700 text-white';
+          actionBtn.textContent = 'Lepas ✕';
+          actionBtn.onclick = () => toggleEquipItem(item.id);
+        } else if (isOwned) {
+          actionBtn.className += ' bg-[#006399] hover:bg-[#004972] text-white shadow-[0_2px_0_0_#004972]';
+          actionBtn.textContent = 'Pakai ✨';
+          actionBtn.onclick = () => toggleEquipItem(item.id);
+        } else {
+          if (coins >= item.price) {
+            actionBtn.className += ' bg-[#ffdea9] hover:bg-amber-300 text-[#271900] shadow-[0_2px_0_0_#c88f00]';
+            actionBtn.textContent = `Beli (${item.price} 🟡)`;
+            actionBtn.onclick = () => buyItem(item);
+          } else {
+            actionBtn.className += ' bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200';
+            actionBtn.disabled = true;
+            actionBtn.textContent = `Koin Kurang (${item.price} 🟡)`;
+          }
+        }
+        card.appendChild(infoDiv);
+        card.appendChild(actionBtn);
+        shopItemsList.appendChild(card);
+      });
+      updateFittingRoomPreview();
+    }
+
+    function buyItem(item) {
+      if (coins < item.price) {
+        speakIndonesian("Koin belum cukup! Selesaikan level untuk dapat koin.");
+        return;
+      }
+      coins -= item.price;
+      userInventory.owned.push(item.id);
+      userInventory.equipped.push(item.id);
+      speakIndonesian(`Hore! ${item.name} berhasil dibeli dan langsung dipakai!`);
+      updateShopCoinsDisplay();
+      renderShopItems();
+      updateCodiAppearanceEverywhere();
+      saveUserData(true);
+    }
+
+    function toggleEquipItem(itemId) {
+      const idx = userInventory.equipped.indexOf(itemId);
+      if (idx >= 0) userInventory.equipped.splice(idx, 1);
+      else userInventory.equipped.push(itemId);
+      renderShopItems();
+      updateCodiAppearanceEverywhere();
+      saveUserData(false);
+    }
+
+    function updateFittingRoomPreview() {
+      renderCodiAvatar('xl', 'closet-avatar-preview-box');
+      if (equippedSummaryBadge) {
+        const count = userInventory.equipped.length;
+        equippedSummaryBadge.textContent = count === 0 ? 'Gaya Standar' : `${count} Aksesoris Aktif`;
+      }
+    }
+
+    function updateCodiAppearanceEverywhere() {
+      renderCodiAvatar('xl', 'closet-avatar-preview-box');
+      renderCodiAvatar('md', 'game-banner-codi-avatar');
+      renderMapNodes();
+      renderBoard();
+    }
+
+    function loadLevel(lvl) {
+      const cfg = LEVELS_CONFIG[lvl];
+      if (!cfg) return;
+
+      overlayLevelBadge.textContent = cfg.badge;
+      overlayLevelTitle.textContent = cfg.title;
+      overlayDialogText.innerHTML = cfg.dialog;
+      if (codiConceptBadge) codiConceptBadge.textContent = cfg.badge;
+      if (codiConceptSummary) codiConceptSummary.textContent = cfg.summary;
+
+      if (strategyAnalogyText) strategyAnalogyText.textContent = cfg.tip;
+      if (strategyStepsText) strategyStepsText.textContent = cfg.hint;
+      gridGoalLabel.textContent = `Tujuan: Kotak ${coordsToLabel(cfg.battery.col, cfg.battery.row)} ⚡`;
+      if (mapConceptBadge) mapConceptBadge.textContent = cfg.concept;
+      if (mapHintText) mapHintText.textContent = cfg.hint;
+
+      codeQueue = [...cfg.initialSlots];
+      codiState = { ...cfg.start };
+
+      renderPalette(cfg.allowedBlocks);
+      renderTenSlots();
+      renderBoard();
+      renderCodiAvatar('md', 'game-banner-codi-avatar');
+    }
+
+    function coordsToLabel(col, row) {
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+      return `${letters[col]}${row + 1}`;
+    }
+
+    function renderPalette(allowedList) {
+      blockPaletteContainer.innerHTML = '';
+      const paletteDefs = {
+        forward: { id: 'forward', label: 'Maju 1 Langkah', icon: '⬆️', bg: 'bg-sky-500 hover:bg-sky-600 shadow-[0_2px_0_0_#0284c7] text-white' },
+        right: { id: 'right', label: 'Belok Kanan', icon: '↪️', bg: 'bg-amber-400 hover:bg-amber-500 shadow-[0_2px_0_0_#d97706] text-amber-950' },
+        left: { id: 'left', label: 'Belok Kiri', icon: '↩️', bg: 'bg-amber-400 hover:bg-amber-500 shadow-[0_2px_0_0_#d97706] text-amber-950' },
+        if_obstacle: { id: 'if_obstacle', label: 'JIKA Halangan ➔ Kanan', icon: '⚡', bg: 'bg-purple-600 hover:bg-purple-700 shadow-[0_2px_0_0_#6b21a8] text-white' },
+        if_correct_sensor: { id: 'if_correct_sensor', label: 'JIKA Sensor Benar ➔ Maju', icon: '📡', bg: 'bg-purple-600 hover:bg-purple-700 shadow-[0_2px_0_0_#6b21a8] text-white' },
+        loop_4: { id: 'loop_4', label: 'ULANGI 4x (Maju)', icon: '🔂', bg: 'bg-orange-500 hover:bg-orange-600 shadow-[0_2px_0_0_#c2410c] text-white' },
+        loop_zigzag: { id: 'loop_zigzag', label: 'Tangga Zig-Zag', icon: '🪜', bg: 'bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_2px_0_0_#c2410c] text-white' },
+        smart_corridor_loop: { id: 'smart_corridor_loop', label: 'AUTOPILOT KORIDOR', icon: '🚀', bg: 'bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 shadow-[0_2px_0_0_#4c1d95] text-white' }
+      };
+
+      allowedList.forEach(cmdKey => {
+        const b = paletteDefs[cmdKey];
+        if (!b) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `tactile-btn flex items-center justify-between px-3 py-1.5 rounded-xl font-['Outfit'] font-black cursor-pointer ${b.bg} transition-all h-[40px] text-xs`;
+        btn.innerHTML = `
+          <div class="flex items-center gap-2 min-w-0"><span class="text-base shrink-0">${b.icon}</span><span class="truncate font-black text-xs leading-none">${b.label}</span></div>
+          <span class="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-md font-bold shrink-0 ml-1.5">+ Pasang</span>
+        `;
+        btn.onclick = () => addCommandToSlots(b.id);
+        blockPaletteContainer.appendChild(btn);
+      });
+    }
+
+    function addCommandToSlots(cmdId) {
+      if (isRunning) return;
+      if (codeQueue.length >= MAX_SLOTS) {
+        speakIndonesian("Pita aksi sudah penuh 20 slot!");
+        return;
+      }
+      codeQueue.push(cmdId);
+      renderTenSlots();
+    }
+
+    clearAllSlotsBtn?.addEventListener('click', () => {
+      if (isRunning) return;
+      codeQueue = [];
+      renderTenSlots();
+    });
+
+    function renderTenSlots() {
+      tenSlotsGrid.innerHTML = '';
+      slotCounter.textContent = `${codeQueue.length} / ${MAX_SLOTS} Terisi`;
+      const blockStyles = {
+        forward: { label: 'Maju', icon: '⬆️', bg: 'bg-sky-100 border-sky-300 text-sky-900' },
+        right: { label: 'Kanan', icon: '↪️', bg: 'bg-amber-100 border-amber-300 text-amber-900' },
+        left: { label: 'Kiri', icon: '↩️', bg: 'bg-amber-100 border-amber-300 text-amber-900' },
+        if_obstacle: { label: 'JIKA Radar', icon: '⚡', bg: 'bg-purple-100 border-purple-300 text-purple-900' },
+        if_correct_sensor: { label: 'JIKA Sensor', icon: '📡', bg: 'bg-purple-100 border-purple-300 text-purple-900' },
+        wrong_turn: { label: 'Bug! [✕]', icon: '🐞', bg: 'bg-rose-100 border-rose-400 text-rose-900' },
+        loop_4: { label: 'Loop 4x', icon: '🔂', bg: 'bg-orange-100 border-orange-300 text-orange-950' },
+        loop_zigzag: { label: 'ZigZag', icon: '🪜', bg: 'bg-amber-100 border-amber-400 text-amber-950' },
+        smart_corridor_loop: { label: 'Autopilot', icon: '🚀', bg: 'bg-purple-100 border-purple-400 text-purple-950' }
+      };
+
+      for (let i = 0; i < MAX_SLOTS; i++) {
+        if (i < codeQueue.length) {
+          const cmd = codeQueue[i];
+          const meta = blockStyles[cmd] || { label: cmd, icon: '⚙️', bg: 'bg-slate-100 border-slate-300 text-slate-800' };
+          const slot = document.createElement('div');
+          slot.className = `relative flex items-center justify-between px-1 py-1 rounded-lg border-2 ${meta.bg} shadow-xs transition-all h-[36px] text-[10px] font-black select-none font-['Outfit']`;
+          slot.id = `action-slot-${i}`;
+          slot.innerHTML = `
+            <div class="flex items-center gap-1 min-w-0"><span class="w-3 h-3 rounded-full bg-white/90 flex items-center justify-center text-[8px] font-black text-slate-700 shrink-0">${i + 1}</span><span class="text-[11px] shrink-0">${meta.icon}</span><span class="truncate text-[9px]">${meta.label}</span></div>
+            <button type="button" class="w-3.5 h-3.5 rounded-full bg-white/95 hover:bg-rose-500 hover:text-white text-slate-500 flex items-center justify-center text-[9px] font-black shrink-0 transition-colors cursor-pointer shadow-xs ml-0.5" onclick="removeSlotItem(${i})" title="Hapus balok ini">✕</button>
+          `;
+          tenSlotsGrid.appendChild(slot);
+        } else {
+          const emptySlot = document.createElement('div');
+          emptySlot.className = 'flex items-center justify-center gap-0.5 px-1 py-1 rounded-lg border-2 border-dashed border-slate-200 text-slate-400 font-bold text-[9px] h-[36px] bg-slate-50/50 font-["Outfit"]';
+          emptySlot.id = `action-slot-${i}`;
+          emptySlot.innerHTML = `<span class="w-3 h-3 rounded-full bg-slate-200/60 flex items-center justify-center text-[8px] text-slate-500 font-black">${i + 1}</span><span class="text-slate-400 text-[9px] truncate">+Slot</span>`;
+          tenSlotsGrid.appendChild(emptySlot);
+        }
+      }
+    }
+
+    window.removeSlotItem = function(idx) {
+      if (isRunning) return;
+      codeQueue.splice(idx, 1);
+      renderTenSlots();
+    };
+
+    function renderBoard() {
+      interactiveGridBoard.innerHTML = '';
+      const cfg = LEVELS_CONFIG[currentLevel];
+      if (!cfg) return;
+
+      for (let r = 0; r < 6; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'grid grid-cols-6 gap-1';
+        for (let c = 0; c < 6; c++) {
+          const cell = document.createElement('div');
+          const coordLabel = coordsToLabel(c, r);
+          cell.id = `cell-${c}-${r}`;
+          cell.dataset.coord = coordLabel;
+          cell.className = 'relative bg-white rounded-xl border border-slate-200 flex items-center justify-center transition-all min-h-[44px]';
+
+          const badge = document.createElement('div');
+          badge.className = 'absolute -top-0.5 -left-0.5 bg-slate-100 text-slate-500 text-[8px] font-black px-1 rounded font-["Outfit"]';
+          badge.textContent = coordLabel;
+          cell.appendChild(badge);
+
+          const obs = cfg.obstacles.find(o => o.col === c && o.row === r);
+          if (obs) {
+            cell.classList.add('bg-slate-100', 'border-slate-300');
+            badge.className = 'absolute -top-0.5 -left-0.5 bg-slate-400 text-white text-[8px] font-black px-1 rounded font-["Outfit"]';
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'text-lg select-none';
+            iconSpan.textContent = obs.icon;
+            cell.appendChild(iconSpan);
+          }
+
+          const sensor = cfg.sensors.find(s => s.col === c && s.row === r);
+          if (sensor) {
+            cell.classList.add('bg-purple-50', 'border-purple-200');
+            const sensSpan = document.createElement('span');
+            sensSpan.className = 'absolute bottom-0.5 right-1 text-xs select-none';
+            sensSpan.textContent = sensor.icon;
+            cell.appendChild(sensSpan);
+
+            const radarRing = document.createElement('div');
+            radarRing.className = 'absolute inset-0 rounded-xl border-2 border-purple-400 pointer-events-none radar-pulse';
+            cell.appendChild(radarRing);
+          }
+
+          if (cfg.battery.col === c && cfg.battery.row === r) {
+            cell.classList.add('bg-amber-50', 'border-2', 'border-amber-400', 'shadow-xs');
+            badge.className = 'absolute -top-0.5 -left-0.5 bg-amber-500 text-white text-[8px] font-black px-1 rounded font-["Outfit"]';
+            const batt = document.createElement('div');
+            batt.id = 'interactive-battery';
+            batt.className = 'animate-bounce text-xl select-none';
+            batt.style.animationDuration = '1.4s';
+            batt.textContent = '🔋';
+            cell.appendChild(batt);
+          }
+
+          if (codiState.col === c && codiState.row === r) {
+            cell.classList.add('border-2', 'border-dashed', 'border-emerald-500', 'bg-emerald-50/50');
+            const codi = document.createElement('div');
+            codi.id = 'active-codi-sprite';
+            codi.className = 'transition-transform duration-300 relative select-none flex items-center justify-center';
+            codi.innerHTML = renderCodiAvatar('sm');
+            updateCodiDirectionVisual(codi, codiState.dir);
+            cell.appendChild(codi);
+          }
+          rowDiv.appendChild(cell);
+        }
+        interactiveGridBoard.appendChild(rowDiv);
+      }
+    }
+
+    function updateCodiDirectionVisual(element, dir) {
+      if (!element) return;
+      if (dir === 'N') element.style.transform = 'rotate(-90deg)';
+      else if (dir === 'E') element.style.transform = 'rotate(0deg)';
+      else if (dir === 'S') element.style.transform = 'rotate(90deg)';
+      else if (dir === 'W') element.style.transform = 'rotate(180deg) scaleY(-1)';
+    }
+
+    function resetLevelBoard() {
+      isRunning = false;
+      const cfg = LEVELS_CONFIG[currentLevel];
+      if (!cfg) return;
+      codiState = { ...cfg.start };
+      document.querySelectorAll('[id^="action-slot-"]').forEach(el => el.classList.remove('ring-2', 'ring-emerald-400', 'bg-emerald-200'));
+      renderBoard();
+    }
+
+    resetCodeBtn?.addEventListener('click', resetLevelBoard);
+
+    runCodeBtn?.addEventListener('click', () => {
+      if (isRunning) return;
+      if (codeQueue.length === 0) {
+        speakIndonesian("Pasang balok perintah terlebih dahulu ya!");
+        return;
+      }
+      resetLevelBoard();
+      isRunning = true;
+
+      let executionList = [];
+      codeQueue.forEach((cmd, slotIdx) => {
+        if (cmd === 'loop_4') {
+          for (let k = 0; k < 4; k++) executionList.push({ action: 'forward', slotIdx });
+        } else if (cmd === 'loop_zigzag') {
+          for (let k = 0; k < 2; k++) {
+            executionList.push({ action: 'forward', slotIdx });
+            executionList.push({ action: 'right', slotIdx });
+            executionList.push({ action: 'forward', slotIdx });
+            executionList.push({ action: 'left', slotIdx });
+          }
+        } else if (cmd === 'smart_corridor_loop') {
+          for (let k = 0; k < 4; k++) {
+            executionList.push({ action: 'smart_sensor_step', slotIdx });
+          }
+        } else if (cmd === 'wrong_turn') {
+          executionList.push({ action: 'right', slotIdx });
+          executionList.push({ action: 'forward', slotIdx });
+        } else {
+          executionList.push({ action: cmd, slotIdx });
+        }
+      });
+
+      let stepPointer = 0;
+      const cfg = LEVELS_CONFIG[currentLevel];
+
+      function runNextStep() {
+        if (!isRunning) return;
+        document.querySelectorAll('[id^="action-slot-"]').forEach(el => el.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-200'));
+
+        if (stepPointer >= executionList.length) {
+          if (codiState.col === cfg.battery.col && codiState.row === cfg.battery.row) {
+            triggerLevelSuccess();
+          } else {
+            speakIndonesian("Hampir berhasil! Codi belum sampai di baterai. Ayo coba perbaiki lagi!");
+            isRunning = false;
+          }
+          return;
+        }
+
+        const item = executionList[stepPointer];
+        const slotEl = document.getElementById(`action-slot-${item.slotIdx}`);
+        if (slotEl) slotEl.classList.add('ring-2', 'ring-emerald-500');
+
+        executeSingleCommand(item.action);
+        stepPointer++;
+
+        const hitObstacle = cfg.obstacles.find(o => o.col === codiState.col && o.row === codiState.row);
+        if (hitObstacle) {
+          speakIndonesian("Aduh! Codi menabrak rintangan! Ayo atur ulang urutan perintah.");
+          isRunning = false;
+          return;
+        }
+        setTimeout(runNextStep, executionSpeed);
+      }
+      setTimeout(runNextStep, 180);
+    });
+
+    function executeSingleCommand(action) {
+      const directions = ['N', 'E', 'S', 'W'];
+      let dirIdx = directions.indexOf(codiState.dir);
+      const cfg = LEVELS_CONFIG[currentLevel];
+
+      if (action === 'right') {
+        dirIdx = (dirIdx + 1) % 4;
+        codiState.dir = directions[dirIdx];
+      } else if (action === 'left') {
+        dirIdx = (dirIdx + 3) % 4;
+        codiState.dir = directions[dirIdx];
+      } else if (action === 'forward') {
+        if (codiState.dir === 'N') codiState.row = Math.max(0, codiState.row - 1);
+        else if (codiState.dir === 'E') codiState.col = Math.min(5, codiState.col + 1);
+        else if (codiState.dir === 'S') codiState.row = Math.min(5, codiState.row + 1);
+        else if (codiState.dir === 'W') codiState.col = Math.max(0, codiState.col - 1);
+      } else if (action === 'if_obstacle') {
+        let nextCol = codiState.col, nextRow = codiState.row;
+        if (codiState.dir === 'E') nextCol++;
+        const hasBlock = cfg.obstacles.some(o => o.col === nextCol && o.row === nextRow);
+        if (hasBlock) {
+          dirIdx = (dirIdx + 1) % 4;
+          codiState.dir = directions[dirIdx];
+          codiState.row = Math.min(5, codiState.row + 1);
+        } else {
+          codiState.col = Math.min(5, codiState.col + 1);
+        }
+      } else if (action === 'if_correct_sensor') {
+        codiState.col = Math.min(5, codiState.col + 1);
+      } else if (action === 'smart_sensor_step') {
+        let probeCol = codiState.col + 1;
+        const obstacleAhead = cfg.obstacles.some(o => o.col === probeCol && o.row === codiState.row);
+        if (obstacleAhead) {
+          codiState.row = Math.min(5, codiState.row + 1);
+        } else {
+          codiState.col = Math.min(5, codiState.col + 1);
+        }
+      }
+      renderBoard();
+    }
+
+    function triggerLevelSuccess() {
+      isRunning = false;
+      coins += 50;
+      updateShopCoinsDisplay();
+
+      const isNewProgress = currentLevel === highestUnlockedLevel && highestUnlockedLevel < 15;
+      if (isNewProgress) {
+        highestUnlockedLevel++;
+        saveUserData(true);
+      } else {
+        saveUserData(false);
+      }
+
+      spawnConfetti();
+      
+      const subtitle = document.getElementById('victory-subtitle');
+      const unlockBadge = document.getElementById('victory-unlock-badge');
+
+      // Kondisi tombol modal kemenangan berdasarkan level saat ini (Level 15 khusus tamat)
+      if (currentLevel === 15) {
+        if (subtitle) subtitle.textContent = "Luar Biasa! Kamu Telah Menamatkan Seluruh Pulau!";
+        if (unlockBadge) unlockBadge.style.display = 'none';
+        if (victoryButtonsContainer) {
+          victoryButtonsContainer.innerHTML = `
+            <button class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-slate-100 hover:bg-slate-200 font-['Outfit'] font-bold text-slate-700 shadow-[0_2px_0_0_#cbd5e1] cursor-pointer text-xs" onclick="window.replayCurrentLevel()" type="button">Main Lagi ↺</button>
+            <button class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-[#006399] hover:bg-[#004972] font-['Outfit'] font-bold text-white shadow-[0_2px_0_0_#004972] cursor-pointer text-xs flex items-center justify-center gap-1" onclick="openShopModal(); victoryModal.classList.add('hidden'); victoryModal.classList.remove('flex');" type="button">🛍️ Toko</button>
+            <button class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-rose-500 hover:bg-rose-600 font-['Outfit'] font-black text-white shadow-[0_3px_0_0_#be123c] cursor-pointer text-xs" onclick="window.resetAndRestartCampaign()" type="button">Mulai Ulang (Level 1) 🔄</button>
+          `;
+        }
+      } else {
+        if (subtitle) subtitle.textContent = "Baterai Berhasil Menyala!";
+        if (unlockBadge) unlockBadge.style.display = 'inline-flex';
+        if (victoryButtonsContainer) {
+          victoryButtonsContainer.innerHTML = `
+            <button aria-label="Main Lagi" class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-slate-100 hover:bg-slate-200 font-['Outfit'] font-bold text-slate-700 shadow-[0_2px_0_0_#cbd5e1] cursor-pointer text-xs" id="victory-replay-btn" onclick="window.replayCurrentLevel()" type="button">Main Lagi ↺</button>
+            <button class="tactile-btn flex-1 py-2.5 px-3 rounded-full bg-[#006399] hover:bg-[#004972] font-['Outfit'] font-bold text-white shadow-[0_2px_0_0_#004972] cursor-pointer text-xs flex items-center justify-center gap-1" id="victory-shop-btn" type="button"><span class="">🛍️</span><span class="">Toko Codi</span></button>
+            <button aria-label="Lanjut Level Berikutnya" class="tactile-btn flex-1 py-2.5 px-4 rounded-full bg-[#38b000] hover:bg-[#2f9600] font-['Outfit'] font-black text-white shadow-[0_3px_0_0_#206d00] cursor-pointer text-xs" id="victory-next-btn" onclick="window.goToNextLevel()" type="button">Lanjut Level ➡️</button>
+          `;
+        }
+      }
+
+      victoryModal.classList.remove('hidden');
+      victoryModal.classList.add('flex');
+      speakIndonesian("Hore! Hebat sekali! Level berhasil diselesaikan!");
+    }
+
+    window.resetAndRestartCampaign = function() {
+      highestUnlockedLevel = 1;
+      currentLevel = 1;
+      saveUserData(false);
+      if (victoryModal) {
+        victoryModal.classList.add('hidden');
+        victoryModal.classList.remove('flex');
+      }
+      if (gameOverlay) {
+        gameOverlay.classList.add('hidden');
+        gameOverlay.classList.remove('flex');
+      }
+      renderMapNodes();
+      showToast("Petualangan baru dimulai kembali dari Level 1! 🚀", "success");
+      speakIndonesian("Petualangan baru dimulai kembali dari level 1!");
+    };
+
+    function spawnConfetti() {
+      if (!confettiContainer) return;
+      confettiContainer.innerHTML = '';
+      const colors = ['#206d00', '#38b000', '#ffba27', '#006399', '#f43f5e'];
+      for (let i = 0; i < 36; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.top = `${Math.random() * 20}%`;
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = `${Math.random() * 0.4}s`;
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confettiContainer.appendChild(piece);
+      }
+    }
+
+    window.replayCurrentLevel = function() {
+      if (victoryModal) {
+        victoryModal.classList.add('hidden');
+        victoryModal.classList.remove('flex');
+      }
+      codeQueue = [];
+      loadLevel(currentLevel);
+      resetLevelBoard();
+      renderTenSlots();
+      renderBoard();
+    };
+
+    window.goToNextLevel = function() {
+      if (victoryModal) {
+        victoryModal.classList.add('hidden');
+        victoryModal.classList.remove('flex');
+      }
+      if (currentLevel < 15) {
+        currentLevel++;
+        if (currentLevel > highestUnlockedLevel) {
+          highestUnlockedLevel = currentLevel;
+          saveUserData(false);
+        }
+        loadLevel(currentLevel);
+        renderMapNodes();
+      } else {
+        if (gameOverlay) {
+          gameOverlay.classList.add('hidden');
+          gameOverlay.classList.remove('flex');
+        }
+        renderMapNodes();
+        showToast('Selamat! Seluruh level pulau berhasil dituntaskan! 👑', 'success');
+      }
+    };
+
+    loadSavedUserData();
+    renderProfileHUD();
+    renderMapNodes();
+    updateShopCoinsDisplay();
+    renderShopItems();
+    updateAudioUI();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProfileHUD();
+      renderMapNodes();
+      updateShopCoinsDisplay();
+      renderShopItems();
+      updateCodiAppearanceEverywhere();
+      updateAudioUI();
+    });
+
+    window.addEventListener('resize', () => {
+      renderMapNodes();
+    });
+  </script>
+</body></html>
